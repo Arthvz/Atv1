@@ -17,13 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/hello/{nome}', function (String $nome) {
-    if(strlen($nome) < 3) {
-        echo ('Este nome é inválido... Tente novamente! <br> Obs:. (Em um nome é esperado 3 ou mais letras!)');
-    } else {
-        echo 'Olá '. $nome . '! Bem-vindo ao meu site.';
-    };
-});
+Route::get('/hello/{name}', function (String $name) {
+    return view('hello', ['name' => $name]);
+})->where('name', '^[A-Z][a-z]{2,}$');
 
 Route::get('/conta/{x}/{y}/{operacao?}', function (int $x , int $y, String $operacao = null){
     switch($operacao){
@@ -83,33 +79,14 @@ Route::get('/conta/{x}/{y}/{operacao?}', function (int $x , int $y, String $oper
             
     };
     
-})->where ('x', '[0-9]+' ) ->where('y', '[0-9]+');
+})  ->where ('x', '[0-9]+') 
+    ->where('y', '[0-9]+');
 
-Route::get('/idade/{ano}/{mes?}/{dia?}', function (int $ano, int $mes = null, int $dia = null) {
-        if($mes = null && $dia = null){
-            if(count_chars($ano) < 4){
-                echo 'Ano incorreto! (Obs:. Espera-se um ano completo - 4 [quatro] digitos!)';
-                
-            } else {
-                echo 'Sua idade é ' . 2023 - $ano . ' de acordo com o ano de seu nascimento!';
-                
-            }
-        } 
-        else if($dia = null){
-            if(count_chars($ano) < 4 && count_chars($mes) < 1){
-                echo 'Ano e mês incorretos! (Obs:. Espera-se um ano completo - 4 [quatro] digitos e um mês completo - 1 ou 2 dígitos!)';
-                
-            } else {
-                echo 'Sua idade é ' . (2023 - $ano)  . ' de acordo com o ano de seu nascimento!';
-                
-            }
-        } else {
-            if(count_chars($ano) < 4 || count_chars($mes) < 1 || count_chars($dia) < 1 ){
-                echo 'Ano, mês ou dia incorretos! (Obs:. Espera-se um ano completo - 4 [quatro] digitos e um mês e dia completos - 1 ou 2 dígitos!)';
-                
-            } else {
-                echo 'Sua idade é ' . 2023 - $ano . ' de acordo com o ano de seu nascimento!';
-                
-            }
-        };
-    });
+Route::get('/idade/{year}/{month?}/{day?}', function (int $year, int $month = null, int $day = null) {
+       $today = new DateTime(date('Y-m-d h:i:s'));
+       $userBirthday = new DateTime(DateTimeImmutable::createFromFormat("Y-m-d", $year.$month.$day));
+    
+       return view('idade', ['year' => $year, 'month' => $month, 'day' => $day, 'today' => $today, 'userBirthday' => $userBirthday]);
+    })  ->where('year','[0-9]{4}') 
+        ->where('month', '[0-9]{1,2}?')
+        ->where('day', '[0-9]{1,2}?');
