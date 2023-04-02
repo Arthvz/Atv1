@@ -12,9 +12,9 @@
         @elseif($day == null && $month == null)
             <p>Você tem exatamente: {{$today->format('Y') - $year}} anos</p>
         @elseif($day == null)
-            <p>Você tem exatamente: {{$today->format('Y') - $year}} anos {{($today->format('m') - $month) - $today->format('m')}}</p>
+            <p>Você tem exatamente: {{$today->format('Y') - ($year + 1)}} anos {{($month + 3)- $today->format('m')}}</p>
         @else
-            <p>Você tem exatamente: {{$today->format('Y') - $year}} anos {{$today->format('m') - $month}} meses e {{($today->format('d') - $day)}} dias!</p>
+            <p>Você tem exatamente: {{$today->format('Y') - ($year + 1)}} anos {{($month + 3)- $today->format('m')}} meses e {{($day + 19)- $today->format('d')}} dias!</p>
         @endif
 </body>
 </html>
